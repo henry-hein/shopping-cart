@@ -1,6 +1,6 @@
 var updateTotalPrice = function (ele) {
   var price = ($(ele).find('.price input').val());
-  var quantity = parseInt($(ele).find('.qty input').val());
+  var quantity = $(ele).find('.qty input').val();
   var totalPrice = price * quantity;
   $(ele).children('.totalPrice').html(totalPrice);
 
@@ -25,5 +25,13 @@ var updateCartTotal = function () {
 
 $(document).ready(function() {
   updateCartTotal();
+
+  $('.btn.remove').on('click', function(event){
+    $(this).closest('tr').remove();
+    updateCartTotal();
+  });
   
+  $('tr input').on('input', function () {
+    updateCartTotal();
+  });
 });

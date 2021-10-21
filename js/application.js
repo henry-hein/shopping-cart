@@ -1,14 +1,10 @@
 var updateTotalPrice = function (ele) {
-  var price = ($(ele).find('.price input').val());
+  var price = $(ele).find('.price input').val();
   var quantity = $(ele).find('.qty input').val();
   var totalPrice = price * quantity;
   $(ele).children('.totalPrice').html(totalPrice);
 
   return totalPrice;
-}
-
-var sum = function (acc, x) {
-  return acc + x;
 }
 
 var updateCartTotal = function () {
@@ -18,7 +14,9 @@ var updateCartTotal = function () {
     totalSum.push(totalPrice);
   });
 
-  var cartTotal = totalSum.reduce(sum);
+  var cartTotal = totalSum.reduce(function (acc,r) {
+      return acc + r;
+  }, 0);
   $('.total').html(cartTotal);
 }
 
@@ -26,12 +24,31 @@ var updateCartTotal = function () {
 $(document).ready(function() {
   updateCartTotal();
 
-  $('.btn.remove').on('click', function(event){
+  $(document).on('click', '.btn.remove', function(event){
     $(this).closest('tr').remove();
     updateCartTotal();
   });
   
-  $('tr input').on('input', function () {
+  $(document).on('input', 'tr input', function () {
     updateCartTotal();
+  });
+
+  $('#addItem').on('click', function (event) {
+    event.preventDefault();
+    var item = $(this).parent().siblings().children('[name = item]').val();
+    var price = $(this).parent().siblings().children('[name = price]').val();
+    var quantity = $(this).parent().siblings().children('[name = quantity]').val();
+    $('tbody').append('<tr>' +
+      '<td class="item"><input type="text" value="' + item + '"</td>' +
+      '<td class="price"><input type="number" value="' + price + '" /></td>' +
+      '<td class="qty"><input type="number" value="' + quantity + '" /></td>' +
+      '<td class="totalPrice"></td>' +
+      '<td><button class="btn btn-light btn-sm remove">remove</button></td>' +
+    '</tr>');
+
+    updateCartTotal();
+    var item = $(this).parent().siblings().children('[name = item]').val('');
+    var price = $(this).parent().siblings().children('[name = price]').val('');
+    var quantity = $(this).parent().siblings().children('[name = quantity]').val('');
   });
 });
